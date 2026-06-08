@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration Form</title>
+
+  <!-- Google Fonts: Playfair Display (bold) for headings -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================
+       REGISTRATION WIDGET — SELF-CONTAINED STYLES
+       Scoped to #reg-widget to avoid Webflow conflicts.
+       ========================================================== */
+
+    /* Reset within widget */
+    #reg-widget *, #reg-widget *::before, #reg-widget *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Widget container */
+    #reg-widget {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 680px;
+      margin: 40px auto;
+      border: 2px dashed #990303;
+      border-radius: 1px;
+      padding: 36px 32px;
+      background: #fff;
+      color: #222;
+    }
+
+    /* Title */
+    #reg-widget .rw-title {
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 24px;
+      color: #990303;
+      margin-bottom: 20px;
+    }
+
+    /* ---- Guest Tab Track ---- */
+    #reg-widget .rw-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 10px 12px;
+      background: #f0efed;
+      border: 1px solid #e0ddd8;
+      border-radius: 40px;
+    }
+
+    /* Tab pill — shared base */
+    #reg-widget .rw-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 22px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* Primary tab (Party of One) — navy */
+    #reg-widget .rw-tab.primary { background: #1e2d3d; color: #fff; }
+    #reg-widget .rw-tab.primary.active { background: #1e2d3d; color: #fff; }
+
+    /* Guest tabs (2-5) — gold */
+    #reg-widget .rw-tab.added { background: #c89a6c; color: #fff; }
+    #reg-widget .rw-tab.active.added { background: #b0834f; color: #fff; }
+
+    /* Placeholder tabs */
+    #reg-widget .rw-tab.placeholder {
+      background: transparent;
+      color: #b5b2ad;
+      cursor: default;
+      font-weight: 400;
+    }
+
+    /* Remove (X) button inside tabs */
+    #reg-widget .rw-tab .rw-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+      border: none;
+      margin-left: 2px;
+      transition: background 0.15s;
+    }
+    #reg-widget .rw-tab .rw-remove:hover { background: rgba(255, 255, 255, 0.5); }
+
+    /* ---- Description ---- */
+    #reg-widget .rw-desc {
+      font-size: 12.5px;
+      color: #3a3a3a;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    /* ---- Form Rows ---- */
+    #reg-widget .rw-form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    #reg-widget .rw-form-group {
+      flex: 1;
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+    #reg-widget .rw-form-group.wide { flex: 2; }
+
+    /* Labels */
+    #reg-widget .rw-form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    /* Inputs */
+    #reg-widget .rw-form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #cdcdcd;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #222;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #reg-widget .rw-form-group input::placeholder { color: #aaa; }
+    #reg-widget .rw-form-group input:focus { border-color: #1e2d3d; }
+
+    /* Invalid state — red border */
+    #reg-widget .rw-form-group input.rw-invalid { border-color: #c0392b; }
+
+    /* Inline error message below each field */
+    #reg-widget .rw-error-msg {
+      font-size: 11.5px;
+      color: #c0392b;
+      margin-top: 4px;
+      min-height: 16px;
+      line-height: 1.3;
+    }
+
+    /* ---- Buttons ---- */
+    #reg-widget .rw-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    #reg-widget .rw-btn {
+      padding: 14px 30px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+      border: 2px solid transparent;
+    }
+
+    #reg-widget .rw-btn-outline { background: #fff; color: #222; border-color: #333; }
+    #reg-widget .rw-btn-outline:hover { border-color: #111; background: #fafafa; }
+
+    #reg-widget .rw-btn-primary { background: #1e2d3d; color: #fff; border-color: #1e2d3d; }
+    #reg-widget .rw-btn-primary:hover { background: #162433; }
+
+    /* Disabled / loading */
+    #reg-widget .rw-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Spinner animation */
+    #reg-widget .rw-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: rw-spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes rw-spin { to { transform: rotate(360deg); } }
+
+    /* Server error banner */
+    #reg-widget .rw-server-error {
+      background: #fdecea;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    /* ---- Success State ---- */
+    #reg-widget .rw-success { text-align: center; padding: 48px 20px; }
+    #reg-widget .rw-success h2 {
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 22px;
+      color: #1e2d3d;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      #reg-widget { padding: 28px 20px; }
+      #reg-widget .rw-form-row { gap: 12px; }
+    }
+    @media (max-width: 600px) {
+      #reg-widget { padding: 24px 16px; margin: 20px 12px; }
+      #reg-widget .rw-form-row { flex-direction: column; gap: 0; }
+      #reg-widget .rw-tabs { gap: 6px; padding: 8px; }
+      #reg-widget .rw-tab { padding: 8px 14px; font-size: 12px; }
+      #reg-widget .rw-actions { flex-direction: column; }
+      #reg-widget .rw-btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==========================================================
+     REGISTRATION WIDGET — WEBFLOW EMBED
+     Copy from here to "END REGISTRATION WIDGET".
+     ========================================================== -->
+<div id="reg-widget">
+
+  <h2 class="rw-title">How many will be attending?</h2>
+
+  <!-- Guest Tabs (rendered by JS) -->
+  <div class="rw-tabs" id="rw-tabs"></div>
+
+  <!-- Form Area -->
+  <div id="rw-form-area">
+    <div class="rw-server-error" id="rw-server-error"></div>
+
+    <p class="rw-desc">
+      In order to process your registration, we ask you to provide the following information.
+      Please note that all fields marked with an asterisk (*) are required.
+    </p>
+
+    <form id="rw-form" novalidate>
+      <!-- Fields rendered dynamically by JS -->
+      <div id="rw-fields-container"></div>
+
+      <div class="rw-actions">
+        <button type="button" class="rw-btn rw-btn-outline" id="rw-addGuest">ADD A GUEST</button>
+        <button type="submit" class="rw-btn rw-btn-primary" id="rw-submitBtn">COMPLETE REGISTRATION</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="rw-success" class="rw-success" style="display: none;">
+    <h2>Thank you! Your submission has been received!</h2>
+  </div>
+</div>
+<!-- ========== END REGISTRATION WIDGET ========== -->
+
+<script>
+/**
+ * Registration Widget
+ *
+ * Multi-guest event registration form with:
+ * - Dynamic tabs (1 registrant + up to 4 guests)
+ * - Per-field inline validation with error messages
+ * - Phone auto-formatting (US)
+ * - Loading spinner during submission
+ * - Server error banner
+ * - Scroll/focus to first error
+ * - Success state replaces form
+ * - POSTs to a backend endpoint (no API keys client-side)
+ */
+(function () {
+  "use strict";
+
+  /* ══════════════════════════════════════════════
+     CONFIGURATION — update per event embed
+     ══════════════════════════════════════════════ */
+  var CONFIG = {
+    eventId: "sep-ivc-retirement-2026-wed",   // Must match config/events.js key
+    apiEndpoint: "https://custom-form-blush.vercel.app/api/register",        // Your backend URL
+    maxGuests: 5
+  };
+
+  var LABELS = [
+    "Party of One", "Party of Two", "Party of Three",
+    "Party of Four", "Party of Five"
+  ];
+
+  /* ══════════════════════════════════════════════
+     FIELD DEFINITIONS
+     ══════════════════════════════════════════════ */
+
+  // Primary registrant fields (guest index 0)
+  var PRIMARY_FIELDS = [
+    { row: 1, key: "firstName",  label: "First Name (required)",    type: "text",  placeholder: "First name",      required: true, errMsg: "First name is required." },
+    { row: 1, key: "lastName",   label: "Last Name (required)",     type: "text",  placeholder: "Last name",       required: true, errMsg: "Last name is required." },
+    { row: 1, key: "email",      label: "Email (required)",         type: "email", placeholder: "Email",           required: true, errMsg: "Please enter a valid email address." },
+    { row: 2, key: "phone",      label: "Phone Number (required)",  type: "tel",   placeholder: "(000) 000-0000",  required: true, errMsg: "Please enter a valid phone number.", wide: false },
+    { row: 2, key: "address",    label: "Address (required)",       type: "text",  placeholder: "Address",         required: true, errMsg: "Address is required.", wide: true },
+    { row: 3, key: "referral",   label: "Referral Name (required)", type: "text",  placeholder: "Full Name",       required: true, errMsg: "Referral name is required.", solo: true }
+  ];
+
+  // Additional guest fields (guest indexes 1-4)
+  var GUEST_FIELDS = [
+    { row: 1, key: "firstName", label: "First Name (required)", type: "text",  placeholder: "First name", required: true, errMsg: "Guest first name is required." },
+    { row: 1, key: "lastName",  label: "Last Name (required)",  type: "text",  placeholder: "Last name",  required: true, errMsg: "Guest last name is required." },
+    { row: 1, key: "email",     label: "Email (required)",      type: "email", placeholder: "Email",      required: true, errMsg: "Guest email is required." },
+    { row: 2, key: "phone",     label: "Phone Number (required)", type: "tel", placeholder: "(000) 000-0000", required: true, errMsg: "Guest phone number is required.", wide: false },
+    { row: 2, key: "address",   label: "Address (required)",    type: "text",  placeholder: "Address",    required: true, errMsg: "Guest address is required.", wide: true }
+  ];
+
+  /* ══════════════════════════════════════════════
+     STATE
+     ══════════════════════════════════════════════ */
+  var guests = [makeGuest(true)];
+  var activeIndex = 0;
+  var isSubmitting = false;
+
+  /* ══════════════════════════════════════════════
+     DOM REFERENCES
+     ══════════════════════════════════════════════ */
+  var tabsEl          = document.getElementById("rw-tabs");
+  var formArea        = document.getElementById("rw-form-area");
+  var formEl          = document.getElementById("rw-form");
+  var fieldsContainer = document.getElementById("rw-fields-container");
+  var successEl       = document.getElementById("rw-success");
+  var addGuestBtn     = document.getElementById("rw-addGuest");
+  var submitBtn       = document.getElementById("rw-submitBtn");
+  var serverErrEl     = document.getElementById("rw-server-error");
+
+  /* ══════════════════════════════════════════════
+     DATA HELPERS
+     ══════════════════════════════════════════════ */
+
+  /** Creates a blank guest data object. */
+  function makeGuest(isPrimary) {
+    var d = { firstName: "", lastName: "", email: "", phone: "", address: "" };
+    if (isPrimary) { d.referral = ""; }
+    return d;
+  }
+
+  /** Formats raw digits into (XXX) XXX-XXXX. */
+  function fmtPhone(v) {
+    var d = v.replace(/\D/g, "").substring(0, 10);
+    if (!d) return "";
+    if (d.length <= 3) return "(" + d;
+    if (d.length <= 6) return "(" + d.substring(0, 3) + ") " + d.substring(3);
+    return "(" + d.substring(0, 3) + ") " + d.substring(3, 6) + "-" + d.substring(6);
+  }
+
+  /* ══════════════════════════════════════════════
+     RENDER FORM FIELDS
+     ══════════════════════════════════════════════ */
+
+  function renderFields() {
+    var defs = activeIndex === 0 ? PRIMARY_FIELDS : GUEST_FIELDS;
+    var g = guests[activeIndex];
+    fieldsContainer.innerHTML = "";
+
+    // Group by row
+    var rows = {};
+    defs.forEach(function (f) {
+      if (!rows[f.row]) rows[f.row] = [];
+      rows[f.row].push(f);
+    });
+
+    Object.keys(rows).sort().forEach(function (rn) {
+      var rowDiv = document.createElement("div");
+      rowDiv.className = "rw-form-row";
+
+      rows[rn].forEach(function (f) {
+        var grp = document.createElement("div");
+        grp.className = "rw-form-group" + (f.wide ? " wide" : "");
+        if (f.solo) grp.style.flex = "0 1 240px";
+
+        var lbl = document.createElement("label");
+        lbl.setAttribute("for", "rw-" + f.key);
+        lbl.textContent = f.label;
+
+        var inp = document.createElement("input");
+        inp.type = f.type;
+        inp.id = "rw-" + f.key;
+        inp.name = f.key;
+        inp.placeholder = f.placeholder;
+        inp.value = g[f.key] || "";
+        inp.setAttribute("data-key", f.key);
+
+        // Live save + clear errors on input
+        inp.addEventListener("input", function () {
+          var key = this.getAttribute("data-key");
+          if (key === "phone") {
+            var pos = this.selectionStart, before = this.value.length;
+            this.value = fmtPhone(this.value);
+            var after = this.value.length;
+            this.setSelectionRange(pos + (after - before), pos + (after - before));
+          }
+          guests[activeIndex][key] = this.value;
+          this.classList.remove("rw-invalid");
+          var em = this.parentNode.querySelector(".rw-error-msg");
+          if (em) em.textContent = "";
+        });
+
+        var err = document.createElement("div");
+        err.className = "rw-error-msg";
+
+        grp.appendChild(lbl);
+        grp.appendChild(inp);
+        grp.appendChild(err);
+        rowDiv.appendChild(grp);
+      });
+
+      fieldsContainer.appendChild(rowDiv);
+    });
+  }
+
+  /* ══════════════════════════════════════════════
+     RENDER TABS
+     ══════════════════════════════════════════════ */
+
+  function renderTabs() {
+    tabsEl.innerHTML = "";
+
+    for (var i = 0; i < CONFIG.maxGuests; i++) {
+      var t = document.createElement("span");
+      t.className = "rw-tab";
+
+      if (i < guests.length) {
+        t.textContent = LABELS[i];
+        t.setAttribute("data-index", i);
+        t.classList.add(i === 0 ? "primary" : "added");
+        if (i === activeIndex) t.classList.add("active");
+
+        if (i > 0) {
+          var rm = document.createElement("button");
+          rm.className = "rw-remove";
+          rm.innerHTML = "&times;";
+          rm.setAttribute("data-index", i);
+          rm.setAttribute("aria-label", "Remove " + LABELS[i]);
+          rm.addEventListener("click", onRemove);
+          t.appendChild(rm);
+        }
+        t.addEventListener("click", onTabClick);
+      } else {
+        t.classList.add("placeholder");
+        t.textContent = "+ Guest";
+      }
+      tabsEl.appendChild(t);
+    }
+
+    addGuestBtn.style.display = guests.length >= CONFIG.maxGuests ? "none" : "";
+  }
+
+  /* ══════════════════════════════════════════════
+     TAB EVENTS
+     ══════════════════════════════════════════════ */
+
+  function onTabClick(e) {
+    if (e.target.classList.contains("rw-remove")) return;
+    var idx = parseInt(this.getAttribute("data-index"), 10);
+    if (isNaN(idx) || idx === activeIndex) return;
+    activeIndex = idx;
+    renderFields();
+    renderTabs();
+  }
+
+  function onRemove(e) {
+    e.stopPropagation();
+    var idx = parseInt(this.getAttribute("data-index"), 10);
+    if (isNaN(idx) || idx === 0) return;
+    guests.splice(idx, 1);
+    if (activeIndex === idx) activeIndex = Math.min(idx, guests.length - 1);
+    else if (activeIndex > idx) activeIndex--;
+    renderFields();
+    renderTabs();
+  }
+
+  addGuestBtn.addEventListener("click", function () {
+    if (guests.length >= CONFIG.maxGuests) return;
+    guests.push(makeGuest(false));
+    activeIndex = guests.length - 1;
+    renderFields();
+    renderTabs();
+  });
+
+  /* ══════════════════════════════════════════════
+     VALIDATION
+     ══════════════════════════════════════════════ */
+
+  function okEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function okPhone(v) { return v.replace(/\D/g, "").length === 10; }
+
+  /** Validates all guests. Returns { valid, guestIndex, firstErrorKey }. */
+  function validateAll() {
+    for (var i = 0; i < guests.length; i++) {
+      var g = guests[i];
+      var defs = i === 0 ? PRIMARY_FIELDS : GUEST_FIELDS;
+      for (var j = 0; j < defs.length; j++) {
+        var f = defs[j], val = (g[f.key] || "").trim();
+        if (f.required && !val) return { valid: false, guestIndex: i, firstErrorKey: f.key };
+        if (f.key === "email" && val && !okEmail(val)) return { valid: false, guestIndex: i, firstErrorKey: f.key };
+        if (f.key === "phone" && val && !okPhone(val)) return { valid: false, guestIndex: i, firstErrorKey: f.key };
+      }
+    }
+    return { valid: true };
+  }
+
+  /** Shows inline errors on the active guest's fields. */
+  function showErrors() {
+    var g = guests[activeIndex];
+    var defs = activeIndex === 0 ? PRIMARY_FIELDS : GUEST_FIELDS;
+
+    defs.forEach(function (f) {
+      var inp = fieldsContainer.querySelector('[data-key="' + f.key + '"]');
+      var em  = inp ? inp.parentNode.querySelector(".rw-error-msg") : null;
+      if (!inp) return;
+
+      var val = (g[f.key] || "").trim();
+      var bad = false, msg = "";
+
+      if (f.required && !val)                        { bad = true; msg = f.errMsg; }
+      else if (f.key === "email" && val && !okEmail(val)) { bad = true; msg = f.errMsg; }
+      else if (f.key === "phone" && val && !okPhone(val)) { bad = true; msg = f.errMsg; }
+
+      inp.classList.toggle("rw-invalid", bad);
+      if (em) em.textContent = bad ? msg : "";
+    });
+  }
+
+  /** Scrolls to and focuses the first invalid input. */
+  function focusFirstError() {
+    var el = fieldsContainer.querySelector("input.rw-invalid");
+    if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+  }
+
+  /* ══════════════════════════════════════════════
+     LOADING STATE
+     ══════════════════════════════════════════════ */
+
+  function setLoading(on) {
+    isSubmitting = on;
+    submitBtn.disabled = on;
+    addGuestBtn.disabled = on;
+    submitBtn.innerHTML = on
+      ? '<span class="rw-spinner"></span>SUBMITTING...'
+      : "COMPLETE REGISTRATION";
+  }
+
+  /* ══════════════════════════════════════════════
+     SUBMIT
+     ══════════════════════════════════════════════ */
+
+  formEl.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (isSubmitting) return;
+    serverErrEl.style.display = "none";
+
+    var result = validateAll();
+    if (!result.valid) {
+      if (result.guestIndex !== activeIndex) {
+        activeIndex = result.guestIndex;
+        renderFields();
+        renderTabs();
+      }
+      showErrors();
+      focusFirstError();
+      return;
+    }
+
+    var payload = {
+      eventId: CONFIG.eventId,
+      registrant: guests[0],
+      guests: guests.slice(1),
+      totalAttendees: guests.length,
+      submittedAt: new Date().toISOString()
+    };
+
+    setLoading(true);
+
+    fetch(CONFIG.apiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(function (res) {
+      if (!res.ok) return res.json().then(function (b) { throw new Error(b.error || "Submission failed."); });
+      return res.json();
+    })
+    .then(function () {
+      // Success state
+      formArea.style.display = "none";
+      successEl.style.display = "";
+      var tabs = tabsEl.querySelectorAll(".rw-tab");
+      for (var j = 0; j < tabs.length; j++) { tabs[j].style.pointerEvents = "none"; tabs[j].style.opacity = "0.6"; }
+      for (var k = 0; k < guests.length; k++) { if (tabs[k]) tabs[k].style.opacity = "1"; }
+    })
+    .catch(function (err) {
+      serverErrEl.textContent = err.message || "Something went wrong. Please try again.";
+      serverErrEl.style.display = "block";
+      serverErrEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    })
+    .finally(function () { setLoading(false); });
+  });
+
+  /* ══════════════════════════════════════════════
+     INIT
+     ══════════════════════════════════════════════ */
+  renderTabs();
+  renderFields();
+})();
+</script>
+
+</body>
+</html>

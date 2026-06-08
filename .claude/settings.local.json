@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node *)",
+      "Bash(vercel --version)",
+      "Bash(vercel whoami *)",
+      "Bash(curl *)",
+      "Bash(vercel logs *)",
+      "Bash(vercel env *)",
+      "Read(//tmp/**)",
+      "Bash(rm /tmp/vercel-prod-check.env)",
+      "Bash(vercel --prod --yes)"
+    ]
+  }
+}
