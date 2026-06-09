@@ -43,6 +43,10 @@
       margin-bottom: 20px;
     }
 
+    /* Mobile-only accordion adornments — hidden on desktop */
+    #reg-widget .rw-title-current,
+    #reg-widget .rw-title-caret { display: none; }
+
     /* ---- Guest Tab Track ---- */
     #reg-widget .rw-tabs {
       display: flex;
@@ -235,12 +239,167 @@
       #reg-widget .rw-form-row { gap: 12px; }
     }
     @media (max-width: 600px) {
-      #reg-widget { padding: 24px 16px; margin: 20px 12px; }
+      #reg-widget {
+        padding: 22px 16px;
+        margin: 16px 12px;
+        border-radius: 4px;
+      }
+
+      /* ---------- Attendance "select"-style header ---------- */
+      #reg-widget .rw-title {
+        display: block;
+        position: relative;
+        margin-bottom: 14px;
+        padding: 10px 40px 10px 14px;
+        background: #fff;
+        border: 1px solid #d8d4cd;
+        border-radius: 10px;
+        font-size: 16px;
+        color: #222;
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      /* Focus-style outline when dropdown is open */
+      #reg-widget:not(.rw-collapsed) .rw-title {
+        border-color: #1e2d3d;
+        box-shadow: 0 0 0 3px rgba(30, 45, 61, 0.08);
+      }
+      #reg-widget .rw-title-text {
+        display: block;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 2px;
+      }
+      #reg-widget .rw-title-current {
+        display: block;
+        font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #990303;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        letter-spacing: 0;
+        border-radius: 0;
+      }
+      #reg-widget .rw-title-caret {
+        display: block;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        line-height: 1;
+        color: #990303;
+        transition: transform 0.2s ease;
+      }
+      #reg-widget.rw-collapsed .rw-title-caret {
+        transform: translateY(-50%) rotate(-90deg);
+      }
+
+      /* ---------- Expanded dropdown panel ---------- */
+      #reg-widget .rw-tabs {
+        flex-direction: column;
+        gap: 2px;
+        padding: 6px;
+        margin-bottom: 18px;
+        background: #fff;
+        border: 1px solid #d8d4cd;
+        border-radius: 10px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
+      }
+      #reg-widget.rw-collapsed .rw-tabs { display: none; }
+
+      /* List-row tabs */
+      #reg-widget .rw-tab {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+        justify-content: space-between;
+        white-space: normal;
+      }
+      /* Neutralize desktop pill colors on mobile inactive rows */
+      #reg-widget .rw-tab.primary,
+      #reg-widget .rw-tab.added {
+        background: transparent;
+        color: #222;
+        font-weight: 500;
+      }
+      /* Active row keeps its identity color */
+      #reg-widget .rw-tab.active.primary {
+        background: #1e2d3d;
+        color: #fff;
+        font-weight: 700;
+      }
+      #reg-widget .rw-tab.active.added {
+        background: #b0834f;
+        color: #fff;
+        font-weight: 700;
+      }
+      /* "+ Guest" placeholders aren't useful in the dropdown */
+      #reg-widget .rw-tab.placeholder { display: none; }
+
+      /* Remove (×) button — adapt contrast to row background */
+      #reg-widget .rw-tab .rw-remove {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.08);
+        color: #555;
+      }
+      #reg-widget .rw-tab.active .rw-remove {
+        background: rgba(255, 255, 255, 0.25);
+        color: #fff;
+      }
+
+      /* ---------- Form body ---------- */
+      #reg-widget .rw-desc {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 18px;
+      }
       #reg-widget .rw-form-row { flex-direction: column; gap: 0; }
-      #reg-widget .rw-tabs { gap: 6px; padding: 8px; }
-      #reg-widget .rw-tab { padding: 8px 14px; font-size: 12px; }
-      #reg-widget .rw-actions { flex-direction: column; }
-      #reg-widget .rw-btn { width: 100%; text-align: center; }
+      /* Override inline flex on the solo (referral) field so it goes full-width */
+      #reg-widget .rw-form-group {
+        flex: 1 1 auto !important;
+        margin-bottom: 12px;
+      }
+      #reg-widget .rw-form-group label { font-size: 12.5px; }
+      #reg-widget .rw-form-group input {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+
+      /* ---------- Actions ---------- */
+      #reg-widget .rw-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      #reg-widget .rw-btn {
+        width: 100%;
+        min-height: 48px;
+        padding: 14px 20px;
+        letter-spacing: 0.8px;
+      }
+
+      /* ---------- Success ---------- */
+      #reg-widget .rw-success { padding: 32px 12px; }
+      #reg-widget .rw-success h2 { font-size: 18px; line-height: 1.35; }
+    }
+    @media (max-width: 380px) {
+      #reg-widget { margin: 12px 8px; padding: 18px 12px; }
+      #reg-widget .rw-title-current { font-size: 17px; }
+      #reg-widget .rw-tab { padding: 10px 12px; font-size: 13.5px; }
     }
   </style>
 </head>
@@ -252,7 +411,11 @@
      ========================================================== -->
 <div id="reg-widget">
 
-  <h2 class="rw-title">How many will be attending?</h2>
+  <h2 class="rw-title" id="rw-title" aria-expanded="false" aria-controls="rw-tabs">
+    <span class="rw-title-text">How many will be attending?</span>
+    <span class="rw-title-current" id="rw-title-current"></span>
+    <span class="rw-title-caret" aria-hidden="true">&#x25BE;</span>
+  </h2>
 
   <!-- Guest Tabs (rendered by JS) -->
   <div class="rw-tabs" id="rw-tabs"></div>
@@ -347,6 +510,9 @@
   /* ══════════════════════════════════════════════
      DOM REFERENCES
      ══════════════════════════════════════════════ */
+  var widgetEl        = document.getElementById("reg-widget");
+  var titleEl         = document.getElementById("rw-title");
+  var titleCurrentEl  = document.getElementById("rw-title-current");
   var tabsEl          = document.getElementById("rw-tabs");
   var formArea        = document.getElementById("rw-form-area");
   var formEl          = document.getElementById("rw-form");
@@ -355,6 +521,18 @@
   var addGuestBtn     = document.getElementById("rw-addGuest");
   var submitBtn       = document.getElementById("rw-submitBtn");
   var serverErrEl     = document.getElementById("rw-server-error");
+
+  /* ══════════════════════════════════════════════
+     MOBILE ACCORDION — collapses tab row on small viewports.
+     The class is set unconditionally; CSS only acts on it under 600px.
+     ══════════════════════════════════════════════ */
+  function setTabsCollapsed(collapsed) {
+    widgetEl.classList.toggle("rw-collapsed", collapsed);
+    titleEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  }
+  titleEl.addEventListener("click", function () {
+    setTabsCollapsed(!widgetEl.classList.contains("rw-collapsed"));
+  });
 
   /* ══════════════════════════════════════════════
      DATA HELPERS
@@ -476,6 +654,7 @@
     }
 
     addGuestBtn.style.display = guests.length >= CONFIG.maxGuests ? "none" : "";
+    titleCurrentEl.textContent = LABELS[activeIndex];
   }
 
   /* ══════════════════════════════════════════════
@@ -485,10 +664,13 @@
   function onTabClick(e) {
     if (e.target.classList.contains("rw-remove")) return;
     var idx = parseInt(this.getAttribute("data-index"), 10);
-    if (isNaN(idx) || idx === activeIndex) return;
-    activeIndex = idx;
-    renderFields();
-    renderTabs();
+    if (isNaN(idx)) return;
+    if (idx !== activeIndex) {
+      activeIndex = idx;
+      renderFields();
+      renderTabs();
+    }
+    setTabsCollapsed(true);
   }
 
   function onRemove(e) {
@@ -508,6 +690,7 @@
     activeIndex = guests.length - 1;
     renderFields();
     renderTabs();
+    setTabsCollapsed(true);
   });
 
   /* ══════════════════════════════════════════════
@@ -632,6 +815,7 @@
   /* ══════════════════════════════════════════════
      INIT
      ══════════════════════════════════════════════ */
+  setTabsCollapsed(true);
   renderTabs();
   renderFields();
 })();
